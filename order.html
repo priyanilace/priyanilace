@@ -157,10 +157,10 @@
 
       let total = 0;
       const itemsHtml = cart
-        .map(({ name, price, size, color, quantity }) => {
+        .map(({ name, price, quantity }) => {
           const subtotal = price * quantity;
           total += subtotal;
-          return `<p>${name} (Size: ${size}, Color: ${color}) - Rs. ${price} x ${quantity} = Rs. ${subtotal}</p>`;
+          return `<p>${name} - Rs. ${price} x ${quantity} = Rs. ${subtotal}</p>`;
         })
         .join('');
 
@@ -181,10 +181,10 @@
       const payment = document.querySelector('input[name="payment"]:checked').value;
 
       let total = 0;
-      const orderSummaryLines = cart.map(({ name, price, size, color, quantity }) => {
+      const orderSummaryLines = cart.map(({ name, price, quantity }) => {
         const subtotal = price * quantity;
         total += subtotal;
-        return `${name} (Size: ${size}, Color: ${color}) - Rs. ${price} x ${quantity} = Rs. ${subtotal}`;
+        return `${name} - Rs. ${price} x ${quantity} = Rs. ${subtotal}`;
       });
 
       const orderSummaryText = orderSummaryLines.join('\n');
@@ -197,11 +197,10 @@ ${orderSummaryText}
 Total: Rs. ${total}
 Payment Method: ${payment}`;
 
-      const whatsappNumber = '94719721635'; // Your WhatsApp number with country code (no +)
-      const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+      const whatsappNumber = '94719721635';
+      const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
       window.open(whatsappURL, '_blank');
 
-      // Send to Google Sheets webhook
       const sheetWebhook = 'https://script.google.com/macros/s/AKfycbzfa0EWd3UOc8mH9XmeGYXT25EkcbqJ4NgF6ekSQ0U-01Rsnm7Uk8KclxQMYDGsvl1n/exec';
       fetch(sheetWebhook, {
         method: 'POST',
