@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order | Priyani Lace</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Inter&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #5d4037;
+      --background: #fdfdfc;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background: var(--background);
+      color: #333;
+    }
+    header {
+      background: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    header .logo-title {
+      display: flex;
+      align-items: center;
+    }
+    header img {
+      height: 60px;
+      margin-right: 1rem;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--primary);
+    }
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: bold;
+    }
+    nav a:hover {
+      opacity: 0.7;
+    }
+    .container {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    }
+    h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--primary);
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 1rem 0 0.5rem;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .cart-summary {
+      background: #f9f7f6;
+      border: 1px solid #ddd;
+      padding: 1rem;
+      border-radius: 5px;
+      margin-bottom: 2rem;
+    }
+    .cart-summary p {
+      margin: 0.3rem 0;
+    }
+    button {
+      background: var(--primary);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+    .payment-option {
+      margin: 1rem 0;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-title">
+      <img src="priyani logo.png" alt="Priyani Lace Logo" />
+      <h1>Priyani Lace</h1>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="story.html">Our Story</a>
+      <a href="makers.html">Meet the Women</a>
+      <a href="journal.html">Journal</a>
+      <a href="shop.html">Shop</a>
+      <a href="order.html">Order</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Confirm Your Order</h2>
+    <div class="cart-summary" id="cartSummary"></div>
+    <form id="orderForm">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" required />
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" required />
+
+      <label for="address">Delivery Address</label>
+      <textarea id="address" rows="3" required></textarea>
+
+      <div class="payment-option">
+        <label>Choose Payment Method:</label>
+        <input type="radio" name="payment" value="Cash on Delivery" checked /> Cash on Delivery<br />
+        <input type="radio" name="payment" value="Online Payment" /> Online Payment (link shared on WhatsApp)
+      </div>
+
+      <button type="submit">Confirm Order on WhatsApp</button>
+    </form>
+  </div>
+
+  <footer>
+    &copy; 2025 Priyani Lace. Handmade with heart in Sri Lanka.
+  </footer>
+
+  <script>
+    const cart = JSON.parse(localStorage.getItem('priyaniCart')) || [];
+    const cartSummaryDiv = document.getElementById('cartSummary');
+    const form = document.getElementById('orderForm');
+
+    function renderCartSummary() {
+      if (cart.length === 0) {
+        cartSummaryDiv.innerHTML = '<p>Your cart is empty.</p>';
+        return;
+      }
+
+      let total = 0;
+      const itemsHtml = cart
+        .map(({ name, price, size, color, quantity }) => {
+          const subtotal = price * quantity;
+          total += subtotal;
+          return `<p>${name} (Size: ${size}, Color: ${color}) - Rs. ${price} x ${quantity} = Rs. ${subtotal}</p>`;
+        })
+        .join('');
+
+      cartSummaryDiv.innerHTML = `<strong>Your Items:</strong>${itemsHtml}<p><strong>Total: Rs. ${total}</strong></p>`;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (cart.length === 0) {
+        alert('Your cart is empty. Please add items to cart before ordering.');
+        return;
+      }
+
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const payment = document.querySelector('input[name="payment"]:checked').value;
+
+      let total = 0;
+      const orderSummaryLines = cart.map(({ name, price, size, color, quantity }) => {
+        const subtotal = price * quantity;
+        total += subtotal;
+        return `${name} (Size: ${size}, Color: ${color}) - Rs. ${price} x ${quantity} = Rs. ${subtotal}`;
+      });
+
+      const orderSummaryText = orderSummaryLines.join('\n');
+
+      const message = `Hello, I’m ${name}.
+Phone: ${phone}
+Address: ${address}
+I'd like to order:
+${orderSummaryText}
+Total: Rs. ${total}
+Payment Method: ${payment}`;
+
+      const whatsappNumber = '94719721635'; // Your WhatsApp number with country code (no +)
+      const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappURL, '_blank');
+
+      // Send to Google Sheets webhook
+      const sheetWebhook = 'https://script.google.com/macros/s/AKfycbzfa0EWd3UOc8mH9XmeGYXT25EkcbqJ4NgF6ekSQ0U-01Rsnm7Uk8KclxQMYDGsvl1n/exec';
+      fetch(sheetWebhook, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          phone,
+          address,
+          order: orderSummaryLines.join(', '),
+          total,
+          payment,
+        }),
+      });
+
+      localStorage.removeItem('priyaniCart');
+      form.reset();
+      cartSummaryDiv.innerHTML = '<p>Thank you! Your order has been sent.</p>';
+    });
+
+    renderCartSummary();
+  </script>
+</body>
+</html>
